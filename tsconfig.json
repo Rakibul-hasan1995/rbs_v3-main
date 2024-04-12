@@ -1,0 +1,58 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@DB/*": [
+        "./src/mongoose/*"
+      ],
+      "@Validator/*": [
+        "./src/lib/validator/*"
+      ],
+      "@Types/*": [
+        "./src/types/*"
+      ],
+      "@Lib/*": [
+        "./src/lib/*"
+      ],
+      "@Components/*": [
+        "./src/Components/*"
+      ],
+      "@assets/*": [
+        "./src/assets/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/components/shared/layout/Sidebar.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

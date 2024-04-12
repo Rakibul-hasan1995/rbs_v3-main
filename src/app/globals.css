@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "~normalize.css/normalize.css";
+
+@layer components {
+  .bg_primary {
+    @apply bg-gray-50 dark:bg-gray-900 dark:text-blue-gray-50;
+  }
+  .bg_secondary {
+    @apply bg-gray-200 dark:bg-black dark:text-blue-gray-50;
+  }
+  .scroll-box {
+    @apply !scrollbar-thin scrollbar-corner-transparent scroll-smooth scrollbar-thumb-rounded-md scrollbar-thumb-blue-gray-200/50  dark:scrollbar-thumb-blue-gray-200/30  overflow-auto scrollbar-track-transparent;
+  }
+  .flex_center {
+    @apply flex justify-center items-center;
+  }
+  .input {
+    @apply p-1 px-2 border-[1px] border-blue-gray-500 focus-visible:border-blue-400 ring-offset-1  rounded-md text-md focus:ring-4 focus:ring-cyan-100/90 bg-transparent duration-200 focus-visible:outline-none;
+  }
+
+  .bg_blur {
+    @apply bg-white/30 dark:bg-black/50 backdrop-blur-md;
+  }
+
+  /* borders =========start=====*/
+  .border_a {
+    @apply border border-blue-gray-100/50 dark:border-blue-gray-500/50;
+  }
+  .border_t {
+    @apply border-t border-blue-gray-100/50 dark:border-t-blue-gray-500/50;
+  }
+  .border_b {
+    @apply border-b border-blue-gray-100/50 dark:border-b-blue-gray-500/50;
+  }
+  .border_r {
+    @apply border-r border-blue-gray-100/50 dark:border-r-blue-gray-500/50;
+  }
+  .border_l {
+    @apply border-l border-blue-gray-100/50 dark:border-l-blue-gray-500/50;
+  }
+  /* borders ===========end======== */
+}
+.blur {
+  background-color: rgba(255, 255, 255, 0.055);
+  backdrop-filter: blur(6px);
+}

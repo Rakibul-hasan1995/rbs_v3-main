@@ -1,0 +1,841 @@
+openapi: "3.0.0"
+servers:
+  - description: dev server
+    url: http://localhost:3001/api/v2
+  - description: live server
+    url: http://rbs-erp-next.vercel.app/v1/
+  - description: googl server
+    url: https://rbs-erp-next.vercel.app/v1/
+info:
+  description: RBS Inventory API
+  version: "2.0.0"
+  title: RBS Inventory API
+  contact:
+    email: rakibulhasan.bdm@gmail.com
+    name: Rakibul Hasan
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+tags:
+  - name: Public-routes
+    description: "Public Routes"
+  - name: Customers-routes
+  - name: Accounts-routes
+    description: "Chart of accounts"
+
+paths:
+  "/health":
+    get:
+      description: try
+      responses:
+        "200":
+          description: try
+          content:
+            "application/json":
+              schema:
+                type: string
+                example: "This Api Health Is Good"
+
+  "/auth/register":
+    post:
+      description: Public can create own account
+      tags: [User, Public-routes]
+      requestBody:
+        $ref: "#/components/requestBodies/authSignup"
+      responses:
+        "201":
+          description: Signup Successful
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 201
+                  message:
+                    type: string
+                    example: Signup Successful
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyX25hbWUiOiJSYWtpYnVsIiwiVXNlcl9pZCI6IjYyOTZmYTA0NDI2NzIzNGVjYTllNGMyYiIsIlVzZXJfcm9sZSI6ImFkbWluIiwiaWF0IjoxNjkzMjE2NzQ1LCJleHAiOjE2OTU4MDg3NDV9.QRL5EqxwVDPLorpX4GVwvtx21_Xnt2vYsuk4x5Xr4qE
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+  "/auth/login":
+    post:
+      description: login user
+      tags:
+        - "Public-routes"
+        - "User"
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: xyz@example.com
+                password:
+                  type: string
+                  example: abcs#5790
+              required: [email, password]
+      responses:
+        "200":
+          description: Successfully login
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Signin Successful
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyX25hbWUiOiJSYWtpYnVsIiwiVXNlcl9pZCI6IjYyOTZmYTA0NDI2NzIzNGVjYTllNGMyYiIsIlVzZXJfcm9sZSI6ImFkbWluIiwiaWF0IjoxNjkzMjE2NzQ1LCJleHAiOjE2OTU4MDg3NDV9.QRL5EqxwVDPLorpX4GVwvtx21_Xnt2vYsuk4x5Xr4qE
+        "403":
+          $ref: "#/components/responses/403"
+        "500":
+          $ref: "#/components/responses/500"
+  "/customers":
+    get:
+      description: get customers
+      security:
+        - bearerAuth: []
+      tags:
+        - "Customers-routes"
+      parameters:
+        - $ref: "#/components/parameters/pageParams"
+        - $ref: "#/components/parameters/limitParams"
+        - $ref: "#/components/parameters/expandParam"
+        - $ref: "#/components/parameters/sortTypeParams"
+        - $ref: "#/components/parameters/sortKey"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/searchBy"
+      responses:
+        "200":
+          description: Successfully get customers
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Ok
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/customers"
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+  "/customers/{_id}":
+    get:
+      description: Get customer
+      security:
+        - bearerAuth: []
+      tags:
+        - "Customers-routes"
+      parameters:
+        - $ref: "#/components/parameters/pathParameters_id"
+        - $ref: "#/components/parameters/expandParam"
+      responses:
+        "200":
+          description: Successfully get customers
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Ok
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/customers"
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+    put:
+      description: Get customer
+      security:
+        - bearerAuth: []
+      tags:
+        - "Customers-routes"
+      parameters:
+        - $ref: "#/components/parameters/pathParameters_id"
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/accounts"
+      responses:
+        "200":
+          description: Successfully Update customer
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Successfully Update Customer
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+  "/customers/{_id}/statement":
+    get:
+      description: Get customer
+      security:
+        - bearerAuth: []
+      tags:
+        - "Customers-routes"
+      parameters:
+        - $ref: "#/components/parameters/pathParameters_id"
+      responses:
+        "200":
+          description: Successfully get customers Statement
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Ok
+                  data:
+                    type: object
+                    properties:
+                      customer_name:
+                        type: string
+                      total_credit_amount:
+                        type: number
+                      total_credit_amount_formatted:
+                        type: string
+                      total_debit_amount:
+                        type: number
+                      total_debit_amount_formatted:
+                        type: string
+                      closing_amount:
+                        type: number
+                      closing_amount_formatted:
+                        type: string
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                            date_formatted:
+                              type: string
+                            credit_amount:
+                              type: number
+                            credit_amount_formatted:
+                              type: string
+                            debit_amount:
+                              type: number
+                            debit_amount_formatted:
+                              type: string
+                            description:
+                              type: string
+                            page:
+                              type: string
+  "/customers/{_id}/statement/chart-data":
+    get:
+      description: Get customer statement chart
+      security:
+        - bearerAuth: []
+      tags:
+        - "Customers-routes"
+      parameters:
+        - $ref: "#/components/parameters/pathParameters_id"
+        - $ref: "#"
+      responses:
+        "200":
+          description: Successfully get customers Statement
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Ok
+                  data:
+                    type: object
+                    properties:
+                      customer_name:
+                        type: string
+                      total_credit_amount:
+                        type: number
+                      total_credit_amount_formatted:
+                        type: string
+                      total_debit_amount:
+                        type: number
+                      total_debit_amount_formatted:
+                        type: string
+                      closing_amount:
+                        type: number
+                      closing_amount_formatted:
+                        type: string
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            date:
+                              type: string
+                            date_formatted:
+                              type: string
+                            credit_amount:
+                              type: number
+                            credit_amount_formatted:
+                              type: string
+                            debit_amount:
+                              type: number
+                            debit_amount_formatted:
+                              type: string
+                            description:
+                              type: string
+                            page:
+                              type: string
+
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+  "/accounts":
+    get:
+      description: get customers
+      security:
+        - bearerAuth: []
+      tags:
+        - "Accounts-routes"
+      parameters:
+        - $ref: "#/components/parameters/pageParams"
+        - $ref: "#/components/parameters/limitParams"
+        - $ref: "#/components/parameters/sortTypeParams"
+        - $ref: "#/components/parameters/sortKey"
+        - $ref: "#/components/parameters/search"
+        - $ref: "#/components/parameters/searchBy"
+      responses:
+        "200":
+          description: Successfully get customers
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Ok
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/accounts"
+                  pagination:
+                    $ref: "#/components/schemas/pagination"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+    post:
+      description: create chart of account
+      security:
+        - bearerAuth: []
+      tags:
+        - Accounts-routes
+      requestBody:
+        content:
+          "application/json":
+            schema:
+              $ref: "#/components/schemas/accounts"
+      responses:
+        "201":
+          description: Successfully create account
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Ok
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/accounts"
+        "409":
+          $ref: "#/components/responses/409"
+        "400":
+          $ref: "#/components/responses/400"
+        "500":
+          $ref: "#/components/responses/500"
+  "/accounts/{_id}":
+    get:
+      description: get customers
+      security:
+        - bearerAuth: []
+      tags:
+        - "Accounts-routes"
+      parameters:
+        - $ref: "#/components/parameters/pathParameters_id"
+        - $ref: "#/components/parameters/expandParam"
+      responses:
+        "200":
+          description: Successfully get customers
+          content:
+            "application/json":
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 200
+                  message:
+                    type: string
+                    example: Ok
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/accounts"
+        "401":
+          $ref: "#/components/responses/401"
+        "500":
+          $ref: "#/components/responses/500"
+components:
+  schemas:
+    customers:
+      properties:
+        _id:
+          type: string
+          example: 634e372366d40b495f02d980
+        name:
+          type: string
+          example: abcs
+        email:
+          type: string
+          example: test@test.com
+        contact_details:
+          type: object
+          properties:
+            address:
+              type: string
+              example: abc
+            phone:
+              type: string
+              example: "0170265462632"
+        status:
+          type: string
+          example: active
+        payment_amount:
+          type: integer
+          example: 0
+        invoice_amount:
+          type: integer
+          example: 0
+        settlement_amount:
+          type: integer
+          example: 0
+        payment_amount_formatted:
+          type: string
+          example: 0.00
+        invoice_amount_formatted:
+          type: string
+          example: 0.00
+        settlement_amount_formatted:
+          type: string
+          example: 0.00
+        closing_amount:
+          type: integer
+          example: 0
+        closing_amount_formatted:
+          type: string
+          example: 0.00
+
+    user:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: 507f1f77bcf86cd799439011
+        email:
+          type: string
+          format: email
+        user_name:
+          type: string
+          example: example user name
+        roll:
+          type: string
+          enum:
+            - user
+            - customer
+            - supplier
+            - admin
+            - super-admin
+          default: user
+        password:
+          type: string
+          description: hashed password
+          example: abcs#5790
+        contact_details:
+          type: object
+          properties:
+            address:
+              type: string
+              example: 123 Main Street, apt 4B San Diego CA, 91911
+            phone:
+              type: string
+              example: "+8801607876255"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        self_link:
+          type: string
+          example: /user/507f1f77bcf86cd799439011
+      # required: [_id, email, roll, createdAt, updatedAt, self_link]
+    accounts:
+      properties:
+        _id:
+          type: string
+          example: 634e372366d40b495f02d980
+        account_name:
+          type: string
+          example: abcs
+        account_type:
+          type: string
+          enum: ["Expense", "Income", "Liability", "Asset"]
+        is_system_account:
+          type: boolean
+        status:
+          type: string
+          enum: ["active", "inactive"]
+        description:
+          type: string
+        is_debit:
+          type: boolean
+        created_by:
+          type: string
+    pagination:
+      type: object
+      properties:
+        nextPage:
+          type: integer
+          example: 3
+        prevPage:
+          type: integer
+          example: 1
+        currentPage:
+          type: integer
+          example: 2
+        totalPage:
+          type: integer
+          example: 5
+  responses:
+    "500":
+      description: Internal server error
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+                example: 500
+              message:
+                type: string
+                example: We are sorry for this convenience, Please try again later
+              data:
+                example: any
+            required:
+              - "code"
+              - "message"
+    "400":
+      description: Bad Request
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: "Bad Request"
+              data:
+                type: object
+                example:
+                  field: "field is required"
+                  field2: "field2 is required"
+
+            required: [code, message]
+    "404":
+      description: Resource not found
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+              message:
+                type: string
+                example: "Resource not found"
+              data:
+                type: object
+            required: [code, message]
+    "401":
+      description: Unauthorized
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Access denied
+    "403":
+      description: Bad Request
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 401
+              message:
+                type: string
+                example: Invalid Credential
+              data:
+                type: object
+                example:
+                  field: "invalid credential"
+    "409":
+      description: Conflict
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 409
+              message:
+                type: string
+                example: Conflict with account_name
+              data:
+                type: object
+                example:
+                  field: "Conflict with this name"
+  parameters:
+    pathParameters_id:
+      in: path
+      name: _id
+      required: true
+      schema:
+        type: string
+        example: 507f1f77bcf86cd799439011
+    pageParams:
+      in: query
+      name: page
+      description: current page number
+      schema:
+        type: integer
+        example: 1
+      required: true
+
+    expandParam:
+      in: query
+      name: expand
+      description: possible expended version
+      schema:
+        type: string
+        enum:
+          - "true"
+          - "false"
+        example: false
+    filterKey:
+      in: query
+      name: filter_key
+      description: filter data by this Property
+      schema:
+        type: string
+        example: status
+    filterValue:
+      in: query
+      name: filter_value
+      description: filter data with this value convert to array by spacing
+      schema:
+        type: string
+        example: Invoiced Reject
+
+    limitParams:
+      in: query
+      name: limit
+      description: maximum items to be returned
+      schema:
+        type: integer
+        example: 5
+    sortTypeParams:
+      in: query
+      name: sort_type
+      description: the type of sort (asc or desc)
+      schema:
+        type: string
+        enum:
+          - asc
+          - desc
+    sortKey:
+      in: query
+      name: sort_key
+      description: sort_key
+      schema:
+        type: string
+        example: createdAt
+    search:
+      in: query
+      name: search
+      description: search terms
+      schema:
+        type: string
+        example: ""
+    searchBy:
+      in: query
+      name: search_by
+      description: search field name
+      schema:
+        type: string
+        example: "key"
+  requestBodies:
+    createUser:
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              user_name:
+                type: string
+                example: john
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                example: abcs#5790
+              roll:
+                type: string
+                enum:
+                  - user
+                  - customer
+                  - supplier
+                  - admin
+                  - super-admin
+                example: customer
+              contact_details:
+                type: object
+                properties:
+                  address:
+                    type: string
+                    example: 123 Main Street, apt 4B San Diego CA, 91911
+                  phone:
+                    type: string
+                    example: "+8801607876255"
+                    required: [email, password]
+                  contactParsonName:
+                    type: string
+                    example: john
+                required:
+                  - address
+            required:
+              - email
+              - user_name
+              - contact_details
+    authSignup:
+      content:
+        "application/json":
+          schema:
+            type: object
+            properties:
+              user_name:
+                type: string
+                example: john
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                example: abcs#5790
+            required: [email, password]
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
